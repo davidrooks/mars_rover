@@ -19,6 +19,17 @@ public class TestRobot {
     }
 
     @Test
+    public void testInitWhenStartingPositionOutsidePlanet() {
+        Planet mars = new Planet(10,5);
+        Robot rory = new Robot(mars, 11,0,'E');
+        assertEquals("Planet unexpected", rory.getPlanet(), mars);
+        assertEquals("Current position unexpected", 11, rory.getXPosition());
+        assertEquals("Current position unexpected", 0, rory.getYPosition());
+        assertEquals("Current direction", 'E', rory.getDirection());
+        assertEquals("Current position unexpected", "LOST", rory.outputPostionandOrientation());
+    }
+
+    @Test
     public void testMoveWhenSingleMove() {
         Planet mars = new Planet(10,5);
         Robot rory = new Robot(mars, 5,0,'E');
