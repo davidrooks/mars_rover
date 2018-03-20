@@ -4,14 +4,16 @@ import java.util.*;
 import java.awt.Point;
 
 public class Robot {
-    Point position;
-    char direction;
-    Planet planet;
+    private Point position;
+    private char direction;
+    private Planet planet;
+    private Boolean lost;
 
     public Robot(Planet planet, int x, int y, char direction) {
         this.planet = planet;
         this.position = new Point(x,y);
         this.direction = direction;
+        this.lost = false;
     }
 
     public Planet getPlanet() {
@@ -31,25 +33,33 @@ public class Robot {
     }
 
     public String move(String moves) {
-        Boolean lost = false;
         for (int i = 0; i < moves.length(); i++){
             char c = moves.charAt(i);
 
             switch (c) {
-                case 'F': lost = this.moveForward(); break;
+                case 'F': this.lost = this.moveForward(); break;
                 case 'L': this.rotateLeft(); break;
                 case 'R': this.rotateRight(); break;
             }
 
-            if (lost == true) {
-                return this.outputPostionandOrientation() + " LOST";
+            if (this.lost) {
+                return this.outputPostionandOrientation();
             }
         }
         return this.outputPostionandOrientation();
     }
 
-    private String outputPostionandOrientation(){
-        return (int) this.position.x + " " + (int) this.position.y + " " + this.direction;
+    public String outputPostionandOrientation(){
+        if (this.lost) {
+            return (int) this.position.x + " " + (int) this.position.y + " " + this.direction + " LOST";
+        } else if ((int) this.position.x > this.planet.getMaxX() ||
+            (int) this.position.x < 0 ||
+            (int) this.position.y > this.planet.getMaxY() ||
+            (int) this.position.y < 0) {
+            return "LOST";
+        } else {
+            return (int) this.position.x + " " + (int) this.position.y + " " + this.direction;
+        }
     }
 
     private void rotateLeft(){
@@ -78,7 +88,7 @@ public class Robot {
             case 'N': newPosition = new Point((int) this.position.x, (int) this.position.y + 1); break;
             case 'S': newPosition = new Point((int) this.position.x, (int) this.position.y - 1); break;
         }
-        
+
         if (newPosition != null) {
             if ((int) newPosition.x > this.planet.getMaxX() ||
                 (int) newPosition.x < 0 ||
@@ -103,8 +113,8 @@ public class Robot {
 
     // public static void main(String[] args){
     //     Planet mars = new Planet(10,10);
-    //     mars.addScent(5,0);
-    //     System.out.println("position 5,0 is scented = " + mars.isScented(5,0));
-    //     System.out.println("position 6,0 is scented = " + mars.isScented(6,0));
+    //     Robot rory = new Robot(mars, 0,0,'N');
+    //     String position = rory.move("FFFFFRFFFFFFFFFFFF");
+    //     System.out.println(position);
     // }
 }
